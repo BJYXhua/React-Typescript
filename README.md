@@ -535,7 +535,9 @@ export default store
 
 命名空间：通过namespace来声明一个命名空间
 
-早期称为内部模块，主要目的是将一个模块内部再进行作用域的划分，防止一些命名冲突的问题
+早期称为内部模块，主要目的是将一个模块内部再进行作用域的划分，防止一些命名冲突的问题。
+
+“内部模块”现在叫做“命名空间”。 另外，任何使用 `module`关键字来声明一个内部模块的地方都应该使用`namespace`关键字来替换
 
 ```typescript
 export namespace timeUitls{
@@ -552,18 +554,25 @@ export namespace timeUitls{
 
 declare 用来声明一个全局的变量，一般用来放置最上面。
 
+declare可以向TypeScript域中引入一个变量，在编写代码的时候就能够实现智能提示的功能
+
 当使用第三方库时，我们需要引用它的声明文件，才能获得对应的代码补全、接口提示等功能。这是因为前端第三方库大多都是非 TypeScript 库，基本上都是使用 JS 编写的，在 TS 中使用非 TS 编写的第三方库，需要有个 xx.d.ts 声明文件
 
 #### (1).声明变量、函数、类
 
 ```typescript
+declare var //声明全局变量
+declare function //声明全局方法
+declare class //声明全局类
+declare enum //声明全局枚举类型
+declare namespace //声明全局对象（含有子属性）
+interface 和 type //声明全局类型
+
 // 声明变量/函数/类
 declare let whyName: string
 declare let whyAge: number
 declare let whyHeight: number
-
 declare function whyFoo(): void
-
 declare class Person {
   name: string
   age: number
@@ -616,8 +625,10 @@ declare module '*.gif'
 
 #### **(4). 声明命名空间**
 
+`namespace`声明可以用来添加新类型，值和命名空间，只要不出现冲突
+
 ```typescript
-// 声明命名空间
+// 声明命名空间 声明全局对象（含有子属性）
 declare namespace $ {
   export function ajax(settings: any): any
 }
