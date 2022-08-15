@@ -24,6 +24,98 @@ npm install -g typescript
 
 通常我们使用 **.ts** 作为 TypeScript 代码文件的扩展名
 
+## TypeScript type 和 interface区别
+
+**1.interface只能定义对象数据结构类型**。
+
+**2.type侧重于直接定义类型**
+
+​	type 还可以给一个或多个类型起一个新名称(当变量用)
+
+​	type当然也能定义对象类型
+
+### type 和 interface 相同点
+
+1.相同点：type和interface都支持扩展
+
+```typescript
+// type 扩展
+type myObj = {
+    name: string;
+}
+// &符号
+type myObjPlus = myObj & { age: number };
+
+const newObj: myObjPlus = {
+    name: '',
+    age: 233
+};
+
+// interface 扩展
+interface myObj {
+    name: string;
+};
+
+// extends继承扩展
+interface myObjPlus extends myObj {
+    age: number;
+};
+
+const newObj: myObjPlus = {
+    name: '',
+    age: 233
+};
+```
+
+### type 和 interface 不同点
+
+区别1: type 可以为基本类型，联合类型 或 元组 甚至any等等 赋值定义别名,interface 明显办不到
+
+```typescript
+type A = string;
+type B = string | unknown;
+type C = B | [ 1, 2 ,3 ,4]; // 赋值当变量用
+let test: C = '';
+```
+
+区别2: interface 定义重名了会合并属性，type 办不到(会报错提醒 重复定义)
+
+```typescript
+// interface 定义重名了会合并属性,很多库ts源码里面都用到过类似方法作为扩展
+interface A {
+    name: string;
+}
+
+interface A {
+    age: number;
+}
+
+const aObj: A = {
+    name: '', // 必须
+    age: 233 // 必须
+};
+```
+
+### 总结 使用场景
+
+(其实自己确实可以想怎么定义就怎么定义，但为了标准化 最好还是得规范点)
+
+#### type 的一般使用场景
+
+- 一般定义基本或联合类型
+- 一般定义元组类型
+- 一般定义函数类型
+- 定义映射类型
+
+#### interface 的使用场景
+
+- 需要interface 重名会自动合并属性扩展的
+- 定义对象数据结构(不使用type时)
+
+————————————————
+版权声明：本文为CSDN博主「天渺工作室」的原创文章
+原文链接：https://blog.csdn.net/sinat_37255207/article/details/124906155
+
 ## TypeScript 基础类型与使用
 
 TypeScript 包含的数据类型如下表:
@@ -92,6 +184,8 @@ var obj: IObj = {
     address: "gds"
 }
 ```
+
+
 
 ### 3.定义普通函数和传参：
 
