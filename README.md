@@ -24,6 +24,34 @@ npm install -g typescript
 
 通常我们使用 **.ts** 作为 TypeScript 代码文件的扩展名
 
+## type类型别名
+
+type 可以定义变量类型，可以定义联合类型或者其他类型...
+
+```typescript
+type point={
+    x:number
+}
+function printCoord(pt:point){...}
+
+type ID =number | string
+function printID(id:ID){...}
+
+type userString=string
+function printString(user:sting):userString{...}      
+```
+
+## interface接口
+
+```typescript
+interface Ipoint{
+    x:number
+}
+function printCoord(pt:Ipoint){...} 
+```
+
+
+
 ## TypeScript type 和 interface区别
 
 **1.interface只能定义对象数据结构类型**。
@@ -116,6 +144,8 @@ const aObj: A = {
 版权声明：本文为CSDN博主「天渺工作室」的原创文章
 原文链接：https://blog.csdn.net/sinat_37255207/article/details/124906155
 
+
+
 ## TypeScript 基础类型与使用
 
 TypeScript 包含的数据类型如下表:
@@ -145,6 +175,8 @@ function error(message: string): never {
 
 ### 1.变量声明
 
+显式类型,通过冒号：type(类型)
+
 ```jsx
 // String(原生的构造函数) vs string (ts中的类型) 
 
@@ -153,19 +185,42 @@ var myname:string = "字符"
 var mybool:boolean = false 
 
 var mynumber:number = 100 
-
+//数组：type[] ，Array<type>
 var mylist:Array<string> = ["111","222","3333"] 
-// 既能数字和字符串
+
+// 联合类型：既可能是数字或字符串
 var myname2:string | number | boolean = 100 
 var myname3:string | number = "kerwin" 
-// 既能数字和字符串
+//联合类型：既能数字和字符串
 var mylist2:Array<string| number> = [1,2,"kerwin"] 
 var mylist3:(string| number)[] = [1,2,"kerwin"] 
 ```
 
+特殊类型 any，接受任何的检查
+
+```typescript
+let obj:any={x:8}
+x='hua'
+```
+
+枚举enum
+
+枚举就是用指定根据变量获取固定的值，通常用在定义上
+
+```typescript
+enum Disable {
+  NO = 0,
+  YES = 1,
+}
+```
+
+
+
 ### 2.对象 使用接口
 
+属性后冒号前加 ?：是 可选的属性，表示属性可以不写
 
+！是非空断言
 
 ```typescript
 // 使用接口
@@ -196,6 +251,8 @@ interface 接口名 { 属性规范 }
 ```
 
 ```typescript
+//函数
+//function test1(a: string（参数类型）, b: number, c?: string): string(返回值类型) {}
 // ?可传可不传，a为字符串类型b是数值类型，c？可传可不传值为字符串，函数: string返回值为字符串类型
 function test1(a: string, b: number, c?: string): string {
     return a.substring(0, 1) + b.toFixed(1) + c?.toUpperCase()
@@ -244,7 +301,24 @@ function Test( mytext:string|number ){
 }
 ```
 
-### 5.定义普通类
+### 5.泛型函数
+
+泛型：是指在定义函数，接口或类的时候，不预先指定具体的类型，而在使用的时候再指定类型的一种特性
+
+```typescript
+// function test<Type>(arr:Type[]):Type |undefined{...}
+function map<Input,Output>(arr:Input,func:()=>Output):Output[]{
+    ...
+}
+```
+
+限制条件:extends
+
+`<Type extends xxx>`
+
+
+
+### 6.定义普通类
 
 ```typescript
 interface MyInter { 
@@ -265,7 +339,7 @@ class MyObj implements MyInter{
 }
 ```
 
-### 6.定义类组件
+### 7.定义类组件
 
 ```typescript
 interface PropInter { 
@@ -291,7 +365,7 @@ class HelloClass extends React.Component<PropInter, StateInter> {
 
 
 
-### 7.定义函数组件
+### 8.定义函数组件
 
 #### （1）基本语法
 
@@ -367,7 +441,7 @@ dispatch({
 })
 ```
 
-### 8.**父子通信**
+### 9.**父子通信**
 
 ```typescript
 //父组件调用 
@@ -390,7 +464,7 @@ const Child = (props:ItemType)=>{
 }
 ```
 
-### 9.路由
+### 10.路由
 
 #### **编程式导航**
 
@@ -428,7 +502,7 @@ class Detail extends Component< RouteComponentProps<IParams> >{
 }
 ```
 
-### 10.**redux**
+### 11.**redux**
 
 ```typescript
 import {createStore} from 'redux' 
@@ -441,5 +515,164 @@ const reducer = (prevState={},action:ActionInter)=>{
 }
 const store = createStore(reducer,//enhancer) 
 export default store
+```
+
+
+
+## TypeScript综合补充
+
+### 1.模块化开发
+
+模块化：每个文件可以是一个独立的模块，支持ES Module，也支持CommonJS；
+
+通过ESModule的模式导出函数（按需导出）
+
+`export function xxx(){ ... }`
+
+`import {xxx} form './xxx'`
+
+### 2.命名空间
+
+命名空间：通过namespace来声明一个命名空间
+
+早期称为内部模块，主要目的是将一个模块内部再进行作用域的划分，防止一些命名冲突的问题
+
+```typescript
+export namespace timeUitls{
+    export function format(time:string){
+        ...
+    }
+}
+ //调用
+    import {timeUitls} from './xxx'
+    console.log(timeUitls.format(...))
+```
+
+### 3.declare声明其他
+
+declare 用来声明一个全局的变量，一般用来放置最上面。
+
+当使用第三方库时，我们需要引用它的声明文件，才能获得对应的代码补全、接口提示等功能。这是因为前端第三方库大多都是非 TypeScript 库，基本上都是使用 JS 编写的，在 TS 中使用非 TS 编写的第三方库，需要有个 xx.d.ts 声明文件
+
+#### (1).声明变量、函数、类
+
+```typescript
+// 声明变量/函数/类
+declare let whyName: string
+declare let whyAge: number
+declare let whyHeight: number
+
+declare function whyFoo(): void
+
+declare class Person {
+  name: string
+  age: number
+  constructor(name: string, age: number)
+}
+```
+
+#### **(2). 声明模块**
+
+ 我们也可以声明模块，比如lodash模块默认不能使用的情况，可以自己来声明这个模块：
+
+声明：
+
+声明模块的语法: declare module ‘模块名’ {},可以通过 export 导出对应库的类、函数等
+
+```typescript
+// 先    【npm install lodash -D】
+// 还需要【npm install @types/lodash -D】
+declare module 'lodash' {
+    export function join(arr: any[]): string
+}
+```
+
+调用：
+
+```typescript
+// 模块
+import lodash from 'lodash'
+console.log(lodash.join(['msg1','msg2']));
+```
+
+可用declare或export关键字；区别declare全局，export需import导出
+
+#### **(3). 声明文件 **  .d.ts
+
+　在某些情况下，我们也可以声明文件：
+
+　比如在开发vue的过程中，默认是不识别我们的.vue文件的，那么我们就需要对其进行文件的声明；
+
+　比如在开发中我们使用了 jpg 这类图片文件，默认typescript也是不支持的，也需要对其进行声明；
+
+```typescript
+// 声明文件
+declare module '*.jpg'
+declare module '*.jpeg'
+declare module '*.png'
+declare module '*.svg'
+declare module '*.gif'
+```
+
+#### **(4). 声明命名空间**
+
+```typescript
+// 声明命名空间
+declare namespace $ {
+  export function ajax(settings: any): any
+}
+```
+
+### 4.类型缩小
+
+类型缩小：宽类型转化为窄类型的过程，常用于处理联合类型的场景。
+
+#### typeof类型守卫
+
+```typescript
+typeof strs==='object'
+typeof strs==='function'
+typeof strs==='number'
+typeof strs==='undefined'
+typeof strs==='string'
+typeof strs==='boolean'
+    ...
+```
+
+真值缩小
+
+使用 条件，&&，||，if语句，布尔否定！
+
+等值缩小
+
+===,!==,==,!=
+
+in操作符缩小
+
+```typescript
+"value" in x
+//x具有可选或必需属性的类型的值
+```
+
+### 5.never类型与穷尽性检查
+
+never:不应该存在的状态
+
+### 6.扩展类型
+
+interface使用**extends**扩展，type 使用&组合多个
+
+### 7.交叉类型
+
+type 使用**&**组合多个
+
+```typescript
+interface test1{
+	name:string
+}
+interface test2{
+	age:number
+}
+type testFull=test1&test2
 ```
 
